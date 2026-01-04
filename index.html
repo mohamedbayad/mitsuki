@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitsuki - Expérience Gastronomique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&family=Oswald:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- BASE STYLES --- */
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0c0c0c;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .heading-font {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .stone-texture {
+            background-color: #121212;
+            background-image: radial-gradient(#1f1f1f 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .digit-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- NEW "HOT" EFFECTS --- */
+
+        /* 1. Steam/Smoke Animation (For Hero) */
+        .steam-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .steam {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(40px);
+            animation: steam-rise 8s infinite linear;
+            opacity: 0;
+        }
+
+        .steam:nth-child(2) {
+            animation-delay: 2s;
+            left: 30%;
+            width: 250px;
+            height: 250px;
+        }
+
+        .steam:nth-child(3) {
+            animation-delay: 4s;
+            left: 70%;
+            width: 180px;
+            height: 180px;
+        }
+
+        @keyframes steam-rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.3;
+            }
+
+            80% {
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: translateY(-300px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* 2. Red Hot Pulse Shadow (For Buttons & Highlights) */
+        @keyframes hot-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 20px 10px rgba(220, 38, 38, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+            }
+        }
+
+        .hot-pulse {
+            animation: hot-pulse 2s infinite;
+        }
+
+        /* 3. Smooth Scroll Reveal (Elements fade up when entering view) */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Existing Nitro Animation */
+        @keyframes gradient-xy {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animate-gradient {
+            animation: gradient-xy 3s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="antialiased font-sans">
+
+    <div
+        class="bg-[#1a1a1a] border-b border-white/5 text-center py-3 px-4 flex justify-between items-center text-xs tracking-widest uppercase text-gray-400 sticky top-0 z-[60]">
+        <span class="hidden md:inline">Livraison Gastronomique • Édition Limitée</span>
+        <div class="flex items-center gap-3 mx-auto md:mx-0">
+            <div class="relative">
+                <span class="absolute -inset-1 rounded-full bg-red-600/30 animate-ping"></span>
+                <span class="text-red-500 font-bold relative">• Commandes ouvertes</span>
+            </div>
+            <span class="border-l border-white/10 pl-3 flex items-center gap-2">
+                Fermeture : <span id="top-countdown" class="text-white font-mono font-bold text-sm">04:00:00</span>
+            </span>
+        </div>
+    </div>
+
+    <nav class="absolute top-12 w-full z-50 p-6 md:p-10 flex justify-between items-center">
+        <div
+            class="text-3xl font-bold heading-font tracking-widest text-white drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">
+            MITSUKI<span class="text-red-600">.</span></div>
+    </nav>
+
+    <header class="relative h-[90vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2670&auto=format&fit=crop"
+                class="w-full h-full object-cover opacity-40 grayscale-[30%]">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] via-[#0c0c0c]/70 to-black/20"></div>
+            <div class="steam-container">
+                <div class="steam"></div>
+                <div class="steam"></div>
+                <div class="steam"></div>
+            </div>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mt-10 reveal-on-scroll">
+            <p
+                class="text-red-500 font-bold tracking-[0.3em] text-xs md:text-sm mb-6 uppercase drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]">
+                Haute Cuisine Japonaise</p>
+            <h1
+                class="text-5xl md:text-8xl leading-[60px] md:!leading-[108px] font-bold text-white mb-8  drop-shadow-lg">
+                L'ART DU SUSHI <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-white to-gray-400">CHEZ
+                    VOUS.</span>
+            </h1>
+
+            <div class="flex justify-center mt-10 reveal-on-scroll" style="transition-delay: 0.2s;">
+                <a href="#menu"
+                    class="group relative inline-flex items-center justify-center overflow-hidden rounded-sm bg-red-700 px-12 py-5 text-white transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(220,38,38,0.8)] active:scale-95 hot-pulse">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-red-900 via-red-600 to-red-900 bg-[length:200%_auto] opacity-100 transition-all duration-500 animate-gradient">
+                    </div>
+                    <div
+                        class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full">
+                    </div>
+                    <div class="relative flex items-center gap-3">
+                        <span
+                            class="heading-font text-sm md:text-lg font-bold tracking-[0.2em] uppercase italic drop-shadow">
+                            Commander Maintenant
+                        </span>
+                        <i data-lucide="arrow-right"
+                            class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    
+    <section id="menu" class="py-24 bg-[#121212] stone-texture relative">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-20 reveal-on-scroll">
+                <span
+                    class="text-red-600 tracking-[0.3em] text-xs font-bold uppercase drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">Carte
+                    Éphémère</span>
+                <h2 class="text-5xl heading-font text-white mt-4 drop-shadow">SÉLECTION DU CHEF</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <div class="group bg-[#0c0c0c] border border-white/5 hover:border-white/20 transition duration-500 flex flex-col reveal-on-scroll"
+                    style="transition-delay: 0.1s;">
+                    <div class="h-64 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gray-800"></div>
+                        <img src="../img/3.jpg"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-700 opacity-80">
+                        <div
+                            class="absolute top-4 left-4 bg-white text-black text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-lg">
+                            38 Pièces</div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-2xl text-white mb-2 heading-font">SILVER BOX</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-widest mb-6">Introduction Idéale</p>
+                        <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-6">
+                            <div><span class="block text-2xl font-bold text-white">375 DH</span></div>
+                            <a href="./checkout.html">
+                                <button
+                                    class="text-gray-400 hover:text-white uppercase tracking-widest text-xs font-bold border-b border-gray-600 pb-1 hover:border-white transition">Choisir</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 lg:-mt-8 relative z-10 reveal-on-scroll" style="transition-delay: 0.2s;">
+                    <div
+                        class="bg-[#161616] border border-red-900/50 shadow-[0_0_60px_rgba(220,38,38,0.15)] h-full flex flex-col relative overflow-hidden group hover:shadow-[0_0_80px_rgba(220,38,38,0.3)] transition duration-500">
+                        <div
+                            class="absolute top-0 w-full bg-red-700 text-white text-center py-2 text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(220,38,38,0.5)] relative overflow-hidden">
+                            <span class="relative z-10">Best Seller</span>
+                            <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                        <div class="h-80 overflow-hidden relative mt-8">
+                            <img src="../img/1.jpg"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                        </div>
+                        <div class="p-10 flex-1 flex flex-col text-center relative">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-red-900/10 to-transparent pointer-events-none">
+                            </div>
+                            <h3 class="text-4xl heading-font text-white mb-2 drop-shadow">DIAMOND BOX</h3>
+                            <p
+                                class="text-red-500 text-sm font-bold tracking-widest uppercase mb-8 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">
+                                64 Pièces d'Excellence</p>
+
+                            <div
+                                class="bg-[#0c0c0c]/80 p-6 mb-8 text-left border border-red-900/20 space-y-3 backdrop-blur-sm relative z-10">
+                                <div class="flex justify-between items-center text-sm text-gray-400">
+                                    <span><i data-lucide="check"
+                                            class="w-4 h-4 inline text-red-600 mr-2 drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]"></i>Coffret
+                                        64pcs</span>
+                                    <span>Inclus</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm text-gray-400">
+                                    <span><i data-lucide="check"
+                                            class="w-4 h-4 inline text-red-600 mr-2 drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]"></i>Sauces
+                                        Premium</span>
+                                    <span>Inclus</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm font-bold text-white">
+                                    <span><i data-lucide="truck"
+                                            class="w-4 h-4 inline text-amber-500 mr-2 drop-shadow-[0_0_5px_rgba(245,158,11,0.8)]"></i>Livraison
+                                        VIP</span>
+                                    <span
+                                        class="text-green-500 drop-shadow-[0_0_5px_rgba(22,163,74,0.5)]">OFFERTE</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto relative z-10">
+                                <div class="flex justify-center items-center gap-4 mb-8">
+                                    <span class="text-gray-600 line-through text-lg">724 DH</span>
+                                    <span class="text-5xl font-bold text-white tracking-tighter drop-shadow">549
+                                        DH</span>
+                                </div>
+
+                                <a href="checkout.html"
+                                    class="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-sm bg-red-700 px-8 py-4 text-white transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] hot-pulse">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-r from-red-900 via-red-600 to-red-900 bg-[length:200%_auto] opacity-100 transition-all duration-500 animate-gradient">
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full">
+                                    </div>
+                                    <span
+                                        class="relative heading-font font-bold tracking-widest uppercase italic drop-shadow">Ajouter
+                                        au Panier</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-[#0c0c0c] border border-white/5 hover:border-white/20 transition duration-500 flex flex-col reveal-on-scroll"
+                    style="transition-delay: 0.3s;">
+                    <div class="h-64 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gray-800"></div>
+                        <img src="../img/2.jpg"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-700 opacity-80">
+                        <div
+                            class="absolute top-4 left-4 bg-white text-black text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-lg">
+                            39 Pièces</div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-2xl text-white mb-2 heading-font">GOLD BOX</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-widest mb-6">Le Dîner Parfait</p>
+                        <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-6">
+                            <div><span class="block text-2xl font-bold text-white">409 DH</span></div>
+                            <a href="./checkout.html">
+                                <button
+                                    class="text-gray-400 hover:text-white uppercase tracking-widest text-xs font-bold border-b border-gray-600 pb-1 hover:border-white transition">Choisir</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#0a0a0a] border-t border-white/5 relative overflow-hidden">
+        
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[600px] bg-red-900/20 blur-[80px] pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10 text-center reveal-on-scroll">
+            
+            <div class="mb-12">
+                <span class="text-red-600 tracking-[0.3em] text-xs font-bold uppercase drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">Immersion</span>
+                <h2 class="text-3xl md:text-5xl heading-font text-white mt-4 drop-shadow uppercase leading-tight">
+                    UN VRAI BONHEUR DANS <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-600">CHAQUE BOUCHÉE !</span>
+                </h2>
+                <p class="text-gray-400 mt-6 max-w-2xl mx-auto font-light text-lg">Regardez la fraîcheur en action.</p>
+            </div>
+
+            <div class="relative w-full max-w-[320px] mx-auto group">
+                
+                <div class="absolute -inset-2 bg-gradient-to-b from-red-600 to-amber-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                
+                <div class="relative rounded-[2rem] overflow-hidden border-4 border-[#222] bg-black aspect-[9/16] shadow-2xl z-10 cursor-pointer" onclick="playSushiVideo()">
+                    
+                    <video id="sushiVideo" class="absolute inset-0 w-full h-full object-cover z-0" playsinline loop muted>
+                        <source src="../img/mitsuki.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo.
+                    </video>
+
+                    <div id="videoOverlay" class="absolute inset-0 z-20 transition-opacity duration-500 bg-black">
+                        <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80">
+                        
+                        <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/60 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <button class="relative w-20 h-20 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110 shadow-lg group-hover:bg-red-600/80">
+                                <i data-lucide="play" class="w-8 h-8 fill-current ml-1"></i>
+                                <span class="absolute -inset-4 rounded-full border border-white/20 animate-ping"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-20 right-4 flex flex-col gap-4 items-center z-30 pointer-events-none">
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white">
+                                <i data-lucide="heart" class="w-5 h-5 fill-current text-red-500"></i>
+                            </div>
+                            <span class="text-[10px] text-white font-bold">1.2k</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white">
+                                <i data-lucide="share-2" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-6 left-4 right-16 text-left z-30 pointer-events-none">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center text-[10px] font-bold text-white">M</div>
+                            <span class="text-white font-bold text-sm shadow-black drop-shadow-md">@mitsuki.rabat</span>
+                        </div>
+                        <p class="text-white text-xs leading-snug line-clamp-2 drop-shadow-md">
+                            Le secret de notre Diamond Box ? Regardez jusqu'à la fin ! 🍣✨ #SushiLuxe
+                        </p>
+                    </div>
+
+                    <div id="pauseIndicator" class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 pointer-events-none z-40">
+                         <i data-lucide="pause" class="w-12 h-12 text-white/50 fill-current"></i>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#0c0c0c] border-y border-white/5 relative">
+        <div class="max-w-6xl mx-auto px-6 reveal-on-scroll">
+            <h2 class="text-3xl heading-font text-white text-center mb-16 drop-shadow">ILS ONT GOÛTÉ À L'EXCELLENCE</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-[#121212] p-8 border border-white/5 relative hover:border-red-900/30 transition duration-500 group">
+                    <div class="absolute -top-3 -left-3 text-red-600 opacity-20 group-hover:opacity-50 transition"><i
+                            data-lucide="quote" class="w-12 h-12 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]"></i></div>
+                    <p class="text-gray-400 italic mb-6 relative z-10">"La Diamond Box est monumentale. Une présentation
+                        digne d'un palace."</p>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                            AM</div>
+                        <p class="text-white text-xs font-bold uppercase">Amine M.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-[#121212] p-8 border border-white/5 relative hover:border-red-900/30 transition duration-500 group">
+                    <div class="absolute -top-3 -left-3 text-red-600 opacity-20 group-hover:opacity-50 transition"><i
+                            data-lucide="quote" class="w-12 h-12 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]"></i></div>
+                    <p class="text-gray-400 italic mb-6 relative z-10">"Enfin des sushis qui ne sont pas que du riz. Le
+                        poisson est d'une fraîcheur incroyable."</p>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                            SK</div>
+                        <p class="text-white text-xs font-bold uppercase">Sarah K.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-[#121212] p-8 border border-white/5 relative hover:border-red-900/30 transition duration-500 group">
+                    <div class="absolute -top-3 -left-3 text-red-600 opacity-20 group-hover:opacity-50 transition"><i
+                            data-lucide="quote" class="w-12 h-12 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]"></i></div>
+                    <p class="text-gray-400 italic mb-6 relative z-10">"Service client au top. Livraison pile à l'heure
+                        pour le dîner."</p>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                            KR</div>
+                        <p class="text-white text-xs font-bold uppercase">Karim R.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section class="py-20 bg-[#101010] border-y border-white/5 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full bg-red-900/10 radial-gradient blur-3xl animate-pulse"
+            style="animation-duration: 4s;"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal-on-scroll">
+            <h3
+                class="text-red-600 tracking-[0.4em] text-xs font-bold uppercase mb-4 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">
+                Dernière chance ce soir</h3>
+            <h2 class="text-3xl md:text-5xl heading-font text-white mb-10 drop-shadow">FERMETURE DES VENTES</h2>
+
+            <div class="flex justify-center items-center gap-4 md:gap-8 mb-10">
+                <div class="text-center">
+                    <div
+                        class="digit-box w-20 h-24 md:w-32 md:h-40 flex items-center justify-center rounded-sm mb-2 shadow-[0_0_15px_rgba(0,0,0,0.5)] border-t border-white/20">
+                        <span id="hours"
+                            class="text-4xl md:text-7xl font-bold text-white font-mono drop-shadow">03</span>
+                    </div>
+                    <span class="text-xs text-gray-500 uppercase tracking-widest">Heures</span>
+                </div>
+                <span class="text-2xl md:text-5xl text-gray-700 mb-8 animate-pulse">:</span>
+                <div class="text-center">
+                    <div
+                        class="digit-box w-20 h-24 md:w-32 md:h-40 flex items-center justify-center rounded-sm mb-2 shadow-[0_0_15px_rgba(0,0,0,0.5)] border-t border-white/20">
+                        <span id="minutes"
+                            class="text-4xl md:text-7xl font-bold text-white font-mono drop-shadow">59</span>
+                    </div>
+                    <span class="text-xs text-gray-500 uppercase tracking-widest">Minutes</span>
+                </div>
+                <span class="text-2xl md:text-5xl text-gray-700 mb-8 animate-pulse">:</span>
+                <div class="text-center">
+                    <div
+                        class="digit-box w-20 h-24 md:w-32 md:h-40 flex items-center justify-center rounded-sm mb-2 shadow-[0_0_20px_rgba(220,38,38,0.2)] border-red-900/50 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-red-600/5 animate-pulse"></div>
+                        <span id="seconds"
+                            class="text-4xl md:text-7xl font-bold text-red-500 font-mono drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">45</span>
+                    </div>
+                    <span class="text-xs text-gray-500 uppercase tracking-widest">Secondes</span>
+                </div>
+            </div>
+            <p class="text-gray-400 text-sm italic">Stock restant : <span
+                    class="text-white font-bold drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">4 Boîtes Diamond</span></p>
+        </div>
+    </section>
+
+    <section class="py-20 bg-[#0a0a0a] border-b border-white/5 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-red-900/5 to-transparent opacity-50 pointer-events-none">
+        </div>
+        <div class="max-w-5xl mx-auto px-6 text-center reveal-on-scroll">
+            <h2 class="text-3xl md:text-5xl heading-font text-white mb-8 leading-tight drop-shadow">
+                CE SOIR, VOUS AVEZ <br>
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]">DEUX
+                    CHOIX.</span>
+            </h2>
+            <p class="text-gray-400 text-lg md:text-xl font-light mb-12 max-w-3xl mx-auto">
+                Vous pouvez commander "comme d'habitude"... <br>
+                <strong class="text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">OU</strong> transformer votre
+                soirée en événement.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-left md:text-center">
+                <div class="bg-[#121212] p-6 border border-white/5 rounded-sm hover:border-red-600/50 hover:shadow-[0_0_20px_rgba(220,38,38,0.1)] transition duration-500 group reveal-on-scroll"
+                    style="transition-delay: 0.1s;">
+                    <div
+                        class="w-14 h-14 bg-red-900/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-red-600 transition duration-300 group-hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+                        <i data-lucide="fish" class="text-red-500 w-7 h-7 group-hover:text-white transition"></i>
+                    </div>
+                    <h3 class="text-white font-bold uppercase tracking-widest mb-3 text-sm">Zéro Congélation</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Nos saumons sont découpés à la minute. Vous ne
+                        goûtez pas le froid, vous goûtez la texture fondante du poisson frais.</p>
+                </div>
+                <div class="bg-[#121212] p-6 border border-white/5 rounded-sm hover:border-amber-600/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.1)] transition duration-500 group reveal-on-scroll"
+                    style="transition-delay: 0.2s;">
+                    <div
+                        class="w-14 h-14 bg-amber-900/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-amber-600 transition duration-300 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+                        <i data-lucide="gem" class="text-amber-500 w-7 h-7 group-hover:text-white transition"></i>
+                    </div>
+                    <h3 class="text-white font-bold uppercase tracking-widest mb-3 text-sm">L'Effet "Wow"</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Quand vous posez la Box Diamond sur la table,
+                        l'ambiance change. C'est visuel, c'est lourd, c'est impressionnant.</p>
+                </div>
+                <div class="bg-[#121212] p-6 border border-white/5 rounded-sm hover:border-green-600/50 hover:shadow-[0_0_20px_rgba(22,163,74,0.1)] transition duration-500 group reveal-on-scroll"
+                    style="transition-delay: 0.3s;">
+                    <div
+                        class="w-14 h-14 bg-green-900/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-600 transition duration-300 group-hover:shadow-[0_0_15px_rgba(22,163,74,0.5)]">
+                        <i data-lucide="shield-check"
+                            class="text-green-500 w-7 h-7 group-hover:text-white transition"></i>
+                    </div>
+                    <h3 class="text-white font-bold uppercase tracking-widest mb-3 text-sm">Risque Zéro</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Une erreur ? Un retard ? Nous ne discutons pas.
+                        Nous remplaçons ou remboursons. Votre satisfaction est notre seule pub.</p>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- <section class="py-24 bg-[#0a0a0a] relative border-t border-white/5 overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-red-900/5 to-transparent opacity-30 pointer-events-none">
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16 relative z-10 reveal-on-scroll">
+            <div class="w-full md:w-1/2 relative group">
+                <div
+                    class="absolute -inset-2 bg-red-900/20 blur-xl opacity-0 group-hover:opacity-100 transition duration-700">
+                </div>
+                <img src="../img/reservation.png"
+                    class="rounded-sm shadow-2xl grayscale hover:grayscale-0 transition duration-700 w-full object-cover h-[500px] relative z-10">
+            </div>
+            <div class="w-full md:w-1/2">
+                <h3
+                    class="text-red-600 tracking-[0.3em] text-xs font-bold uppercase mb-4 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">
+                    Service Traiteur</h3>
+                <h2 class="text-4xl md:text-5xl heading-font text-white mb-6 drop-shadow">VOS ÉVÉNEMENTS,<br>SIGNATURE
+                    MITSUKI.</h2>
+                <p class="text-gray-400 font-light text-lg mb-8 leading-relaxed">
+                    Mariages, soirées privées ou événements d'entreprise. Nos chefs créent des plateaux sur-mesure.
+                </p>
+                <button onclick="startWhatsAppRedirect()"
+                    class="inline-flex items-center gap-3 bg-[#121212] border border-white/20 hover:border-red-600 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition group hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+                    <i data-lucide="message-circle"
+                        class="w-5 h-5 text-green-500 group-hover:drop-shadow-[0_0_5px_rgba(22,163,74,0.8)] transition"></i>
+                    Devis WhatsApp
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-[#0c0c0c] border-t border-white/5 reveal-on-scroll">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Vous avez des questions ?</span>
+                <h2 class="text-3xl heading-font text-white mt-2 drop-shadow">NOUS AVONS LES RÉPONSES</h2>
+            </div>
+            <div class="space-y-4">
+                <details
+                    class="group bg-[#121212] border border-white/5 rounded-sm open:border-red-900/50 transition duration-300 open:shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                    <summary
+                        class="flex justify-between items-center cursor-pointer p-6 list-none text-white font-bold text-sm md:text-base">
+                        <span>Combien de temps pour la livraison ?</span>
+                        <span class="text-red-500 transition-transform group-open:rotate-180"><i
+                                data-lucide="chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">Pour garantir une fraîcheur absolue,
+                        nos chefs préparent la box à la commande. Comptez environ <span class="text-white">45 à 60
+                            minutes</span> pour la préparation et la livraison VIP.</div>
+                </details>
+                <details
+                    class="group bg-[#121212] border border-white/5 rounded-sm open:border-red-900/50 transition duration-300 open:shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                    <summary
+                        class="flex justify-between items-center cursor-pointer p-6 list-none text-white font-bold text-sm md:text-base">
+                        <span>Les sushis arrivent-ils frais ?</span>
+                        <span class="text-red-500 transition-transform group-open:rotate-180"><i
+                                data-lucide="chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">Absolument. Nous utilisons un <span
+                            class="text-white">packaging isotherme "Event"</span> spécial qui maintient la température
+                        idéale.</div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gradient-to-br from-[#121212] to-[#000000] relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-red-900/10 blur-3xl pointer-events-none"></div>
+        <div
+            class="max-w-3xl mx-auto px-6 text-center border border-white/10 p-10 rounded-sm bg-white/5 backdrop-blur-sm relative z-10 reveal-on-scroll">
+            <i data-lucide="crown"
+                class="w-8 h-8 text-amber-500 mx-auto mb-4 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]"></i>
+            <h2 class="text-3xl heading-font text-white mb-2 drop-shadow">LE CERCLE PRIVÉ</h2>
+            <p class="text-gray-400 text-sm mb-8">Accès prioritaire aux prochaines collections.</p>
+            <form class="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" placeholder="Email..."
+                    class="flex-1 bg-black border border-white/10 text-white px-6 py-4 text-sm focus:outline-none focus:border-red-600 focus:shadow-[0_0_15px_rgba(220,38,38,0.3)] transition">
+                <button type="button"
+                    class="bg-white hover:bg-gray-200 text-black font-bold px-8 py-4 text-sm uppercase tracking-widest transition hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]">Rejoindre</button>
+            </form>
+        </div>
+    </section> -->
+
+    <footer class="bg-[#0c0c0c] py-12 border-t border-white/5 text-center relative z-10">
+        <div
+            class="text-2xl font-bold heading-font tracking-widest text-white mb-4 drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">
+            MITSUKI<span class="text-red-600">.</span></div>
+        <p class="text-gray-600 text-xs tracking-widest uppercase">© 2026 mitsuki rabat.</p>
+    </footer>
+
+    <div id="whatsappModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-300"></div>
+
+        <div class="relative bg-[#121212] border border-red-900/30 rounded-sm p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(220,38,38,0.2)] transform scale-95 opacity-0 transition-all duration-300"
+            id="modalContent">
+
+            <div class="relative w-16 h-16 mx-auto mb-6">
+                <div class="absolute inset-0 bg-red-600/20 rounded-full animate-ping"></div>
+                <div
+                    class="relative bg-[#0c0c0c] border border-red-600 rounded-full w-16 h-16 flex items-center justify-center text-green-500 shadow-[0_0_15px_rgba(22,163,74,0.4)]">
+                    <i data-lucide="message-circle" class="w-8 h-8"></i>
+                </div>
+            </div>
+
+            <h3 class="text-white heading-font text-xl mb-2">CONNEXION VIP...</h3>
+            <p class="text-gray-400 text-xs tracking-widest uppercase mb-6" id="loadingText">Recherche d'un Chef
+                disponible</p>
+
+            <div class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mb-4">
+                <div id="progressBar" class="bg-red-600 h-full w-0 transition-all duration-[3000ms] ease-out"></div>
+            </div>
+
+            <p class="text-gray-600 text-[10px]">Ne fermez pas cette fenêtre...</p>
+        </div>
+    </div>
+
+    <script>
+        let isPlaying = false;
+
+        function playSushiVideo() {
+            const video = document.getElementById('sushiVideo');
+            const overlay = document.getElementById('videoOverlay');
+            const pauseIcon = document.getElementById('pauseIndicator');
+
+            if (!isPlaying) {
+                // Lancer la vidéo
+                video.muted = false; // Activer le son si besoin (les navigateurs bloquent parfois le son auto)
+                video.play();
+                overlay.style.opacity = '0'; // Cacher la couverture
+                overlay.style.pointerEvents = 'none'; // Désactiver les clics sur la couverture
+                isPlaying = true;
+            } else {
+                // Mettre en pause (Toggle)
+                if (video.paused) {
+                    video.play();
+                    pauseIcon.style.opacity = '0';
+                    pauseIcon.style.transform = 'scale(1.5)';
+                } else {
+                    video.pause();
+                    pauseIcon.style.opacity = '1';
+                    pauseIcon.style.transform = 'scale(1)';
+                }
+            }
+        }
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        // TIMER LOGIC
+        function startTimer(duration) {
+            var timer = duration, hours, minutes, seconds;
+            const topDisplay = document.querySelector('#top-countdown');
+            const hoursDisplay = document.querySelector('#hours');
+            const minutesDisplay = document.querySelector('#minutes');
+            const secondsDisplay = document.querySelector('#seconds');
+
+            setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                if (topDisplay) topDisplay.textContent = hours + ":" + minutes + ":" + seconds;
+                if (hoursDisplay) hoursDisplay.textContent = hours;
+                if (minutesDisplay) minutesDisplay.textContent = minutes;
+                if (secondsDisplay) secondsDisplay.textContent = seconds;
+
+                if (--timer < 0) { timer = duration; }
+            }, 1000);
+        }
+        window.onload = function () { startTimer(60 * 60 * 4); };
+
+        // SCROLL REVEAL SCRIPT (New)
+        document.addEventListener("DOMContentLoaded", function () {
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+
+            function revealOnScroll() {
+                for (let i = 0; i < revealElements.length; i++) {
+                    const windowHeight = window.innerHeight;
+                    const elementTop = revealElements[i].getBoundingClientRect().top;
+                    const elementVisible = 150; // Trigger point
+
+                    if (elementTop < windowHeight - elementVisible) {
+                        revealElements[i].classList.add("is-visible");
+                    }
+                }
+            }
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); // Trigger once on load
+        });
+    </script>
+
+    <script>
+        function startWhatsAppRedirect() {
+            // 1. Show Modal
+            const modal = document.getElementById('whatsappModal');
+            const content = document.getElementById('modalContent');
+            const bar = document.getElementById('progressBar');
+            const text = document.getElementById('loadingText');
+
+            modal.classList.remove('hidden');
+
+            // Small delay for animation smoothness
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+
+                // Start Progress Bar (3 seconds duration)
+                bar.style.width = '100%';
+            }, 50);
+
+            // 2. Change Text halfway
+            setTimeout(() => {
+                text.innerText = "Chef disponible trouvé !";
+                text.classList.add('text-green-500');
+            }, 1500);
+
+            // 3. Redirect after 3 seconds
+            setTimeout(() => {
+                // REMPLACE LE NUMÉRO ICI !
+                window.location.href = "https://wa.me/212600000000?text=Bonjour,%20je%20souhaite%20un%20devis%20Traiteur%20Mitsuki.";
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
